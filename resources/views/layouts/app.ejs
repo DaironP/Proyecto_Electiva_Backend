@@ -45,17 +45,7 @@
                        aria-haspopup="true"
                        aria-expanded="false"
                        style="color: white">
-
-                        <% if(user) { %>
-
-                            <% if(user.rol === 'customer') { %>
-                                Cliente
-                            <% } else { %>
-                                Entrenador
-                            <% } %>
-
-                        <% } %>
-
+                        Cliente
                     </a>
 
                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
@@ -93,47 +83,41 @@
 
         <div class="options__menu">
 
-            <% if(user) { %>
+            <a href="/user-data"
+               class="<%= path === '/user-data' || path === '/user-edit' ? 'selected' : '' %>">
+                <div class="option">
+                    <i class="fa-solid fa-user-tie"></i>
+                    <span>Información&nbsp;personal</span>
+                </div>
+            </a>
 
-                <a href="/user-data"
-                   class="<%= path === '/user-data' || path === '/user-edit' ? 'selected' : '' %>">
-                    <div class="option">
-                        <i class="fa-solid fa-user-tie"></i>
-                        <span>Información&nbsp;personal</span>
-                    </div>
-                </a>
+            <a href="/customer-pets" class="<%=
+            path === '/customer-pets' ||
+            path === '/create-pet' ||
+            path === '/edit-pet' ? 'selected' : '' %>">
+                <div class="option">
+                    <i class="fa-sharp fa-solid fa-dog"></i>
+                    <span>Mis&nbsp;mascotas</span>
+                </div>
+            </a>
 
-                <% if(user.rol === 'customer') { %>
 
-                    <a href="/customer-pets" class="<%=
-                        path === '/customer-pets' ||
-                        path === '/create-pet' ||
-                        path === '/edit-pet' ? 'selected' : '' %>">
-                        <div class="option">
-                            <i class="fa-sharp fa-solid fa-dog"></i>
-                            <span>Mis&nbsp;mascotas</span>
-                        </div>
-                    </a>
+            <a href="/sessions"
+               class="<%= path === '/sessions' || path === '/create-session' ? 'selected' : '' %>">
+                <div class="option">
+                    <i class="fa-solid fa-book-open"></i>
+                    <span>Sesiones</span>
+                </div>
+            </a>
 
-                <% } %>
+            <a href="/consult-sessions"
+               class="<%= path === '/consult-sessions' ? 'selected' : '' %>">
+                <div class="option">
+                    <i class="fa-solid fa-list-check"></i>
+                    <span>Consultar sesiones</span>
+                </div>
+            </a>
 
-                <a href="/sessions"
-                   class="<%= path === '/sessions' || path === '/create-session' ? 'selected' : '' %>">
-                    <div class="option">
-                        <i class="fa-solid fa-book-open"></i>
-                        <span>Sesiones</span>
-                    </div>
-                </a>
-
-                <a href="/consult-sessions"
-                   class="<%= path === '/consult-sessions' ? 'selected' : '' %>">
-                    <div class="option">
-                        <i class="fa-solid fa-list-check"></i>
-                        <span>Consultar sesiones</span>
-                    </div>
-                </a>
-
-            <% } %>
 
         </div>
 

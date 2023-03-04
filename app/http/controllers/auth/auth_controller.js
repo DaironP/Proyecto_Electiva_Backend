@@ -1,28 +1,40 @@
-const {passport} = require('./passport_controller')
-const bcrypt = require('bcryptjs')
-const uuid = require('uuid')
+const dotenv = require('dotenv')
+dotenv.config()
 
-const {save_data} = require('../persistence/read_and_write_controller')
+const bcrypt = require('bcryptjs')
+const passport = require('./passport_controller')
+const jwt = require('jsonwebtoken')
+
+const Customer = require('../../models/customer')
+const Token = require('../../models/token')
 
 const login = (req, res, next) => {
 
-    passport.authenticate('local', (err, user) => {
+    const options = {session: false}
 
-        if (err) return next(err)
+    passport.authenticate('local', options, (err, user) => {
 
-        if (!user) {
-            req.flash('errorMessage', 'Las credenciales no coinciden con los registros')
-            return res.redirect('/')
+        if (err) {
+            return res.json({
+                status: false,
+                message: 'Error, no ha sido posible autenticar al usuario'
+            })
         }
 
-        req.logIn(user, (err) => {
+        if (!user) {
+            return res.json({
+                status: false,
+                message: 'Las credenciales no coinciden con los registros'
+            })
+        }
 
-            if (err) return next(err)
+        const token = jwt.sign({sub: user._id}, process.env.SECRET_KEY)
 
-            return res.redirect('/profile')
+        return res.json({
+            user,
+            token
         })
 
-    }, () => {
     })(req, res, next)
 
 }
@@ -38,30 +50,41 @@ const logout = (req, res, next) => {
 
 }
 
-const register = (req, res, next) => {
+const register = async (req, res) => {
 
     const {name, surname, document, email, password} = req.body
 
-    bcrypt.hash(password, 10, (err, hash) => {
+    try {
 
-        const customer = {
-            id: uuid.v4(),
-            name, surname, document, email,
+        const hash = await bcrypt.hash(password, 10)
+
+        const data = {
+            name,
+            surname,
+            document,
+            email,
             password: hash,
-            rol: 'customer',
-            dogs: []
+            rol: 'customer'
         }
 
-        save_data('customer.json', customer)
+        const customer = await Customer.create(data)
 
-        req.login(customer, err => {
+        const access_token = jwt.sign({sub: customer['_id']}, process.env.SECRET_KEY)
+        const token = await Token.create({access_token})
 
-            if (err) return next(err)
-
-            return res.redirect('/profile')
+        return res.json({
+            status: true,
+            user_id: customer['_id'],
+            access_token: token['access_token']
         })
 
-    })
+    } catch (e) {
+
+        return res.json({
+            status: false,
+            message: 'Error, no se ha podido crear al cliente'
+        })
+    }
 
 }
 

@@ -30,7 +30,7 @@ const dbConnect = require('./database/connection/mongo')
 app.use(cors())
 dbConnect()
 
-const router = require('./routes/web')
+const router = require('./routes/api')
 app.use(router)
 
 

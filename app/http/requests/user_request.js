@@ -1,62 +1,117 @@
 const {check} = require('express-validator')
 const {validate_result} = require('../exceptions/handler')
-const {read_file} = require('../controllers/persistence/read_and_write_controller')
 
-const users = [...read_file('coach.json'), ...read_file('customer.json')]
+const Coach = require('../models/coach')
+const Customer = require('../models/customer')
 
 const validate_create_user = [
-    check('document').exists().isNumeric().custom(document => {
-        const documentExists = users.find(user => user.document === document)
-        if (documentExists) throw new Error('El documento ingresado ya está registrado')
-        return true
-    }),
 
-    check('name').exists().not().isEmpty(),
-    check('surname').exists().not().isEmpty(),
+    check('name')
+        .exists().withMessage('El nombre es requerido')
+        .not().isEmpty().withMessage('El nombre no puede estar vacío'),
 
-    check('email').exists().isEmail().custom(email => {
-        const emailExists = users.find(user => user.email === email)
-        if (emailExists) throw new Error('La dirección de email ya está en uso')
-        return true
-    }),
+    check('surname')
+        .exists().withMessage('El apellido es requerido')
+        .not().isEmpty().withMessage('El apellido no puede estar vacío'),
 
-    check('password').exists().not().isEmpty().isLength({min: 8}),
+    check('document')
+        .exists().withMessage('El documento es requerido')
+        .not().isEmpty().withMessage('El documento no puede estar vacío')
+        .custom(async (document) => {
 
-    (req, res, next) => validate_result(req, res, next, '/')
+            const coach = await Coach.findOne({document})
+            const customer = await Customer.findOne({document})
+
+            if (coach || customer) {
+                throw new Error('El documento ingresado ya está registrado')
+            }
+
+            return true
+        }),
+
+    check('email')
+        .exists().withMessage('El correo es requerido')
+        .not().isEmpty().withMessage('El correo no puede estar vacío')
+        .isEmail().withMessage('La dirección del correo debe ser valida')
+        .custom(async (email) => {
+
+            const coach = await Coach.findOne({email})
+            const customer = await Customer.findOne({email})
+
+            if (coach || customer) {
+                throw new Error('El correo ingresado ya está registrado')
+            }
+
+            return true
+        }),
+
+    check('password')
+        .exists().withMessage('La contraseña es requerida')
+        .not().isEmpty().withMessage('La contraseña no puede estar vacía')
+        .isLength({min: 8}).withMessage('La contraseña debe tener al menos 8 caracteres'),
+
+    (req, res, next) => validate_result(req, res, next)
 ]
 
 const validate_update_user = [
 
-    check('document').exists().isNumeric().withMessage('Valor no válido').custom((document, {req}) => {
+    check('name')
+        .exists().withMessage('El nombre es requerido')
+        .not().isEmpty().withMessage('El nombre no puede estar vacío'),
 
-        const id = req.params.id
+    check('surname')
+        .exists().withMessage('El apellido es requerido')
+        .not().isEmpty().withMessage('El apellido no puede estar vacío'),
 
-        const documentExists = users
-            .filter(user => user.id !== id)
-            .find(user => user.document === document)
+    check('document')
+        .exists().withMessage('El documento es requerido')
+        .not().isEmpty().withMessage('El documento no puede estar vacío')
+        .custom(async (document, {req}) => {
 
-        if (documentExists) throw new Error('El documento ingresado ya está registrado')
-        return true
-    }),
+            const user_id = req.params.id
 
-    check('name').exists().not().isEmpty().withMessage('Valor no válido'),
-    check('surname').exists().not().isEmpty().withMessage('Valor no válido'),
+            const coach = await Coach.findOne({document})
+            const customer = await Customer.findOne({document})
 
-    check('email').exists().isEmail().withMessage('Valor no válido').custom((email, {req}) => {
+            if (coach && coach._id.toString() !== user_id) {
+                throw new Error('El documento ingresado ya está registrado')
+            }
 
-        const id = req.params.id
+            if (customer && customer._id.toString() !== user_id) {
+                throw new Error('El documento ingresado ya está registrado')
+            }
 
-        const emailExists = users
-            .filter(user => user.id !== id)
-            .find(user => user.email === email)
+            return true
+        }),
 
-        if (emailExists) throw new Error('La dirección de email ya está en uso')
-        return true
-    }),
+    check('email')
+        .exists().withMessage('El correo es requerido')
+        .not().isEmpty().withMessage('El correo no puede estar vacío')
+        .isEmail().withMessage('La dirección del correo debe ser valida')
+        .custom(async (email, {req}) => {
 
-    check('password').exists().not().isEmpty().isLength({min: 8}),
+            const user_id = req.params.id
 
-    (req, res, next) => validate_result(req, res, next, '/user-edit')
+            const coach = await Coach.findOne({email})
+            const customer = await Customer.findOne({email})
+
+            if (coach && coach._id.toString() !== user_id) {
+                throw new Error('El documento ingresado ya está registrado')
+            }
+
+            if (customer && customer._id.toString() !== user_id) {
+                throw new Error('El documento ingresado ya está registrado')
+            }
+
+            return true
+        }),
+
+    check('password')
+        .exists().withMessage('La contraseña es requerida')
+        .not().isEmpty().withMessage('La contraseña no puede estar vacía')
+        .isLength({min: 8}).withMessage('La contraseña debe tener al menos 8 caracteres'),
+
+    (req, res, next) => validate_result(req, res, next)
 ]
 
 module.exports = {validate_create_user, validate_update_user}
