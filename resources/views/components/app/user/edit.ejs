@@ -1,0 +1,47 @@
+<h1 class="text-center" style="font-family: 'Arial Rounded MT Bold', sans-serif">
+    Edición de datos
+</h1>
+
+<div class="container-fluid mt-4">
+
+    <div class="col-11 col-md-5 mx-auto">
+
+        <form action="/user-update/<%= user.id %>" method="post">
+
+            <%- include('./form') %>
+
+            <div class="form-group mt-3">
+                <label for="password" class="fw-bolder">Contraseña</label>
+                <div class="input-group">
+                    <input id="password" type="password" class="form-control mt-2" name="password">
+                    <div class="input-group-append">
+                        <button class="btn btn-warning show-password-btn mt-2" type="button">Mostrar</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4 mb-5">
+                <input type="submit" class="btn btn-success" value="Guardar">
+                <a class="btn btn-primary" href="/user-data">Regresar</a>
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<script>
+    let showPasswordBtn = document.querySelector('.show-password-btn')
+    let passwordInput = document.querySelector('#password')
+
+    showPasswordBtn.addEventListener('click', function () {
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text'
+            showPasswordBtn.textContent = 'Ocultar'
+        } else {
+            passwordInput.type = 'password'
+            showPasswordBtn.textContent = 'Mostrar'
+        }
+    })
+</script>

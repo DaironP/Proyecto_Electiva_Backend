@@ -1,0 +1,128 @@
+<div id="registerModal" class="modal fade mt-5" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+    <div class="modal-dialog">
+
+        <div class="modal-content bg-light">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title" id="exampleModalLabel">REGISTRO DE CLIENTES</h5>
+
+                <button type="button"
+                        class="btn-close btn-close-dark"
+                        data-bs-dismiss="modal"
+                        aria-label="Close">
+                </button>
+
+            </div>
+
+            <div class="modal-body">
+
+                <form action="/register" method="POST">
+
+                    <div class="form-group row mt-2">
+
+                        <label for="nameInput" class="col-md-5 col-form-label text-md-right ms-md-5">
+                            Nombre
+                        </label>
+
+                        <div class="col-md-5">
+
+                            <input id="nameInput"
+                                   type="text"
+                                   class="custom-form form-control"
+                                   name="name"
+                                   autocomplete="name">
+
+                        </div>
+
+                    </div>
+
+                    <div class="form-group row mt-2">
+
+                        <label for="surnameInput" class="col-md-5 col-form-label text-md-right ms-md-5">
+                            Apellido
+                        </label>
+
+                        <div class="col-md-5">
+
+                            <input id="surnameInput"
+                                   type="text" class="custom-form form-control"
+                                   name="surname"
+                                   autocomplete="surname">
+
+                        </div>
+
+                    </div>
+
+                    <div class="form-group row mt-2">
+
+                        <label for="documentInput" class="col-md-5 col-form-label text-md-right ms-md-5">
+                            Identificación
+                        </label>
+
+                        <div class="col-md-5">
+
+                            <input id="documentInput"
+                                   type="text"
+                                   class="custom-form form-control"
+                                   name="document"
+                                   autocomplete="document">
+
+                        </div>
+
+                    </div>
+
+                    <div class="form-group row mt-2">
+
+                        <label for="emailInput" class="col-md-5 col-form-label text-md-right ms-md-5">
+                            Correo
+                        </label>
+
+                        <div class="col-md-5">
+
+                            <input id="emailInput"
+                                   type="email"
+                                   class="custom-form form-control"
+                                   name="email"
+                                   autocomplete="email">
+
+                        </div>
+
+                    </div>
+
+                    <div class="form-group row mt-2">
+
+                        <label for="passwordInput" class="col-md-5 col-form-label text-md-right ms-md-5">
+                            Contraseña
+                        </label>
+
+                        <div class="col-md-5">
+
+                            <input id="passwordInput"
+                                   type="password"
+                                   class="custom-form form-control"
+                                   name="password"
+                                   autocomplete="password">
+
+                        </div>
+
+                    </div>
+
+                    <div class="form-group row mt-4">
+                        <div class="col-md-3 mx-auto">
+                            <button type="submit" class="btn btn-warning">
+                                Registrarse
+                            </button>
+                        </div>
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

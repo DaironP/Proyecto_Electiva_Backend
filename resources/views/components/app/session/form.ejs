@@ -1,0 +1,24 @@
+<div class="form-group mt-3">
+    <label for="description" class="fw-bolder">Descripción</label>
+    <input id="description" type="text" class="form-control mt-2" name="description"
+           <% if (typeof session !== "undefined") { %>value="<%= session.description %>"
+            <% } %>
+    >
+</div>
+
+<div class="form-group mt-3">
+    <label for="date" class="fw-bolder">Día</label>
+    <input id="date" type="date" class="form-control mt-2" name="date"
+           min="<%= new Date().toISOString().substr(0, 10) %>"
+           <% if (typeof session !== "undefined") { %>value="<%= session.date %>"
+            <% } %>
+    >
+</div>
+
+<div class="form-group mt-3">
+    <label for="place" class="fw-bolder">Lugar</label>
+    <input id="place" type="text" class="form-control mt-2" name="place"
+           <% if (typeof session !== "undefined"){ %>value="<%= session.place %>"
+            <% } %>
+    >
+</div>

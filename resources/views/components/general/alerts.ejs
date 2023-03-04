@@ -1,0 +1,19 @@
+<% if (successMessage.length > 0) { %>
+    <script type="text/javascript">
+        Swal.fire({
+            icon: 'success',
+            title: 'En hora buena',
+            text: '<%= successMessage %>'
+        })
+    </script>
+<% } %>
+
+<% if (errorMessage.length > 0) { %>
+    <script type="text/javascript">
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: '<%= errorMessage %>'
+        })
+    </script>
+<% } %>

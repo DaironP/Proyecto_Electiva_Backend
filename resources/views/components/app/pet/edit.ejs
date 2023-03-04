@@ -1,0 +1,22 @@
+<h1 class="text-center" style="font-family: 'Arial Rounded MT Bold', sans-serif">
+    Edición de datos
+</h1>
+
+<div class="container-fluid mt-4">
+
+    <div class="col-11 col-md-5 mx-auto">
+
+        <form action="/update-pet/<%= pet.id %>" method="post">
+
+            <%- include('./form') %>
+
+            <div class="mt-4 mb-5">
+                <input type="submit" class="btn btn-success" value="Guardar">
+                <a class="btn btn-primary" href="/customer-pets">Regresar</a>
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
