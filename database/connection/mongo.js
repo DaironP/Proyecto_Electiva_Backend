@@ -4,7 +4,13 @@ const uri = process.env.DB_URI
 const message = 'Database status:'
 
 const dbConnect = () => {
-    mongoose.connect(uri, err => (err) ? console.log(message, 'Error') : console.log(message, 'Success'))
+
+    mongoose.connect(uri).then(() => {
+        console.log(message, 'Success')
+    }).catch(err => {
+        console.log(message, err)
+    })
+
 }
 
 module.exports = dbConnect
