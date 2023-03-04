@@ -1,2 +1,41 @@
-[{"id":"9a862cac-a048-4be4-a313-4fc99547a6a7","name":"Felipe","surname":"Dueñas","document":"1007382852","email":"felipeduenas0@gmail.com","password":"$2a$10$hGqw0BGp73y8fGGVE2HUUe5ImWVNCKB3attvR4n6jZn86i4dad3x2","rol":"customer","dogs":[]},{"id":"d800858a-8c26-479d-9c31-b0045713e7a4","name":"Dairon","surname":"Pinto","document":"123456","email":"daironpintof@gmail.com","password":"$2a$10$gSjNMt9ZLYEtT1YiMBlqK.q1L/MzBL7no6365sUGJ8ugrdGucO7n2","rol":"customer","dogs":[{"id":"fbb5e5a5-5140-44e6-aa6d-9fe26dde6f24","gender":"Hembra","name":"lupe","breed":"golden","age":"2"}]}]
+const mongoose = require('mongoose')
 
+const {Schema} = mongoose
+
+const CustomerSchema = new Schema({
+    name : {
+        type : String,
+        required : true
+    },
+    surname : {
+        type : String,
+        required : true
+    },
+    document : {
+        type : String,
+        required : true,
+        unique : true
+    },
+    email : {
+        type : String,
+        required : true,
+        unique : true
+    },
+    password : {
+        type : String,
+        required : true
+    },
+    rol : {
+        type : String,
+        required : true
+    },
+    dogs : [
+        {
+            type : Schema.Types.ObjectId,
+            ref : 'dog'
+        }
+    ]
+},{versionKey: false})
+
+
+module.exports = mongoose.model('customer',CustomerSchema)
