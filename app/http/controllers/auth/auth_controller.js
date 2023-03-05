@@ -12,7 +12,7 @@ const login = (req, res, next) => {
 
     const options = {session: false}
 
-    passport.authenticate('local', options, (err, user) => {
+    passport.authenticate('local', options, async (err, user) => {
 
         if (err) {
             return res.json({
@@ -28,26 +28,28 @@ const login = (req, res, next) => {
             })
         }
 
-        const token = jwt.sign({sub: user._id}, process.env.SECRET_KEY)
+        const access_token = jwt.sign({sub: user['_id']}, process.env.SECRET_KEY)
+        const token = await Token.create({access_token})
 
         return res.json({
+            status: true,
             user,
-            token
+            access_token: token['access_token']
         })
 
     })(req, res, next)
 
 }
 
-const logout = (req, res, next) => {
+const logout = async (req, res) => {
 
-    req.logout(err => {
+    const {access_token} = req.body
 
-        if (err) return next(err)
+    await Token.findOneAndDelete(access_token)
 
-        res.redirect('/')
+    return res.json({
+        status: true
     })
-
 }
 
 const register = async (req, res) => {
@@ -67,14 +69,14 @@ const register = async (req, res) => {
             rol: 'customer'
         }
 
-        const customer = await Customer.create(data)
+        const user = await Customer.create(data)
 
-        const access_token = jwt.sign({sub: customer['_id']}, process.env.SECRET_KEY)
+        const access_token = jwt.sign({sub: user['_id']}, process.env.SECRET_KEY)
         const token = await Token.create({access_token})
 
         return res.json({
             status: true,
-            user_id: customer['_id'],
+            user,
             access_token: token['access_token']
         })
 
@@ -88,4 +90,35 @@ const register = async (req, res) => {
 
 }
 
-module.exports = {login, logout, register}
+const verify_token = async (req, res) => {
+
+    try {
+
+        const {access_token} = req.body
+
+        const token = await Token.findOne({access_token})
+
+        if (token) {
+            return res.json({
+                status: true,
+                message: 'Autenticación exitosa'
+            })
+        }
+
+        return res.json({
+            status: false,
+            message: 'Error, no ha sido posible autenticar al usuario'
+        })
+
+    } catch (e) {
+
+        return res.json({
+            status: false,
+            message: 'Error, no ha sido posible autenticar al usuario'
+        })
+
+    }
+
+}
+
+module.exports = {login, logout, register, verify_token}

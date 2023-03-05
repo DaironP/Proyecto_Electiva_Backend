@@ -8,7 +8,7 @@ const validate_result = (req, res, next) => {
     } catch (err) {
         return res.json({
             status: false,
-            errors: err.array()
+            message: 'Hay un error en los campos, por favor verificalos'
         })
     }
 

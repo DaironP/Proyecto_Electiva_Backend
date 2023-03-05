@@ -1,41 +1,40 @@
 const mongoose = require('mongoose')
 
-const {Schema} = mongoose
+const CoachSchema = new mongoose.Schema({
 
-const CoachSchema = new Schema({
-    name : {
-        type : String,
-        required : true
+    name: {
+        type: String,
+        required: true
     },
-    surname : {
-        type : String,
-        required : true
+    surname: {
+        type: String,
+        required: true
     },
-    document : {
-        type : String,
-        required : true,
-        unique : true
+    document: {
+        type: String,
+        required: true,
+        unique: true
     },
-    email : {
-        type : String,
-        required : true,
-        unique : true
+    email: {
+        type: String,
+        required: true,
+        unique: true
     },
-    password : {
-        type : String,
-        required : true
+    password: {
+        type: String,
+        required: true
     },
-    rol : {
-        type : String,
-        required : true
+    rol: {
+        type: String,
+        required: true
     },
-    sessions : [
+    sessions: [
         {
-            type : Schema.Types.ObjectId,
-            ref : 'session'
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'session'
         }
     ]
-},{versionKey: false})
 
+}, {versionKey: false})
 
-module.exports = mongoose.model('coach',CoachSchema)
+module.exports = mongoose.model('coach', CoachSchema)

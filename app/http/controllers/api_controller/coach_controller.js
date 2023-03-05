@@ -1,4 +1,5 @@
 const Coach = require('../../models/coach')
+const bcrypt = require('bcryptjs')
 
 const show = async (req, res) => {
 
@@ -15,28 +16,36 @@ const show = async (req, res) => {
 
         return res.json({
             status: false,
-            message: 'Error, no ha sido posible encontrar al cliente'
+            message: 'Error, no ha sido posible encontrar al entrenador'
         })
     }
 
 }
 
-const update = async (req, res) => {
+const update = (req, res) => {
 
     try {
 
-        await Coach.findByIdAndUpdate(req.params.id, req.body)
+        const {name, surname, document, email, password} = req.body
 
-        return res.json({
-            status: true,
-            message: 'Cliente actualizado correctamente'
+        bcrypt.hash(password, 10, async (err, hash) => {
+
+            const data = {name, surname, document, email, password: hash}
+            const user = await Coach.findByIdAndUpdate(req.params.id, data, {new: true})
+
+            return res.json({
+                status: true,
+                user,
+                message: 'Entrenador actualizado correctamente'
+            })
+
         })
 
     } catch (error) {
 
         return res.json({
             status: false,
-            message: 'Error, no ha sido posible actualizar al cliente'
+            message: 'Error, no ha sido posible actualizar al entrenador'
         })
 
     }
