@@ -13,7 +13,7 @@ const options = {
 const passport_local = new Passport_Local(options, async (email, password, done) => {
 
     const coach = await Coach.find()
-    const customers = await Customer.find()
+    const customers = await Customer.find().populate('dogs')
 
     const users = [...coach, ...customers]
 
@@ -22,8 +22,6 @@ const passport_local = new Passport_Local(options, async (email, password, done)
     if (!user) {
         return done(null, user)
     }
-
-    console.log(user)
 
     bcrypt.compare(password, user.password, (err, res) => {
 

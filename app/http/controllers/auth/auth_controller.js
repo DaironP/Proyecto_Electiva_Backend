@@ -43,13 +43,12 @@ const login = (req, res, next) => {
 
 const logout = async (req, res) => {
 
-    const {access_token} = req.body
-
-    await Token.findOneAndDelete(access_token)
+    await Token.findOneAndDelete(req.body.access_token)
 
     return res.json({
         status: true
     })
+    
 }
 
 const register = async (req, res) => {
@@ -107,7 +106,7 @@ const verify_token = async (req, res) => {
 
         return res.json({
             status: false,
-            message: 'Error, no ha sido posible autenticar al usuario'
+            message: 'No ha sido posible encontrar el Token'
         })
 
     } catch (e) {

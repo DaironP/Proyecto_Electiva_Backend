@@ -1,42 +1,98 @@
-const Dog = require('../models/dog')
-const Customer = require('../models/customer')
+const Dog = require('../../models/dog')
+const Customer = require('../../models/customer')
 
-module.exports = {
-    index : async (req,res)=>{
-        try {
-            const result = await Dog.find({})
+const store = async (req, res) => {
 
-            return res.status(200).json({"result":true,"data":result})
-        } catch (error) {
-            return res.status(500).json({"result":false,"error":error}) 
-        }
-    },
-    save : async(req,res)=>{
-        const {id} = req.params
+    const {gender, name, breed, age} = req.body
 
-        try {
-            const customer = await Customer.findById(id)
-            if( customer ){
-                const dog = new Dog( req.body )
+    try {
 
-                dog.customer = customer
+        const customer = await Customer.findById(req.params.id)
 
-                const result = await dog.save()
+        const data = {gender, name, breed, age}
 
-                customer.dogs.push(dog)
+        const dog = await new Dog(data)
 
-                await customer.save()
-                console.log("Done")
+        dog.customer = customer
+        await dog.save()
 
-                return res.status(200).json({"result":true,"data":result})
+        customer.dogs = [...customer.dogs, dog]
+        await customer.save()
 
-            }else{
-                return res.status(200).json({"result":false,"error":"No existe el Cliente"})  
-            }
-        } catch (error) {
-            return res.status(500).json({"result":false,"error":error}) 
-        }
+        await customer.populate('dogs')
+
+        return res.json({
+            status: true,
+            customer
+        })
+
+    } catch (e) {
+
+        return res.json({
+            status: false,
+            message: 'Error, ha sucedido un problema'
+        })
 
     }
 
 }
+
+const update = async (req, res) => {
+
+    const {gender, name, breed, age} = req.body
+
+    try {
+
+        const data = {gender, name, breed, age}
+
+        const dog = await Dog.findByIdAndUpdate(req.params.id, data, {new: true})
+
+        const customer = await Customer.findById(dog.customer.toString())
+        await customer.populate('dogs')
+
+        return res.json({
+            status: true,
+            customer
+        })
+
+    } catch (e) {
+
+        return res.json({
+            status: false,
+            message: 'Error, ha sucedido un problema'
+        })
+
+    }
+
+}
+
+const destroy = async (req, res) => {
+
+    try {
+
+        const dog = await Dog.findByIdAndDelete(req.params.id)
+
+        const customer = await Customer.findById(dog['customer'].toString())
+        customer.dogs = customer.dogs.filter(dog => dog['_id'].toString() !== req.params.id)
+
+        await customer.save()
+
+        await customer.populate('dogs')
+
+        return res.json({
+            status: true,
+            customer
+        })
+
+    } catch (e) {
+
+        return res.json({
+            status: false,
+            message: 'Error, ha sucedido un problema'
+        })
+
+    }
+
+}
+
+module.exports = {store, update, destroy}
