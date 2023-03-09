@@ -72,16 +72,4 @@ const destroy = async (req, res) => {
 
 }
 
-const get_data = (req) => {
-
-    return {
-        layout: './layouts/app',
-        user: req.user,
-        path: req.path,
-        successMessage: req.flash('successMessage'),
-        errorMessage: req.flash('errorMessage')
-    }
-
-}
-
 module.exports = {store, destroy}

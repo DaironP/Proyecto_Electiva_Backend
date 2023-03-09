@@ -1,37 +1,21 @@
-const express = require('express')
-const expressLayouts = require('express-ejs-layouts')
-const cookieParser = require('cookie-parser')
-const session = require('express-session')
-const flash = require('connect-flash')
-const passport = require('passport')
 const dotenv = require('dotenv')
-
 dotenv.config()
 
+const express = require('express')
+const passport = require('passport')
+const cors = require('cors');
+const dbConnect = require('./database/connection/mongo')
+const router = require('./routes/api')
+
 const app = express()
-const port = process.env.PORT
+const port = process.env.PORT || 3000
 
 app.use(express.json())
-app.use(express.urlencoded({extended: true}))
-app.use(express.static('public'))
-app.use(expressLayouts)
-
-app.set('view engine', 'ejs')
-app.set('views', './resources/views')
-
-app.use(cookieParser('felipe'))
-app.use(session({secret: 'felipe', resave: true, saveUninitialized: true}))
-app.use(passport.initialize(undefined))
-app.use(passport.session(undefined))
-app.use(flash())
-
-const cors = require('cors')
-const dbConnect = require('./database/connection/mongo')
 app.use(cors())
+app.use(passport.initialize(undefined))
+
 dbConnect()
 
-const router = require('./routes/api')
 app.use(router)
-
 
 app.listen(port, () => console.log('Server running on:', 'http://localhost:' + port))

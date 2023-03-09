@@ -43,7 +43,7 @@ const login = (req, res, next) => {
 
 const logout = async (req, res) => {
 
-    await Token.findOneAndDelete(req.body.access_token)
+    await Token.findOneAndDelete({access_token: req.body.access_token})
 
     return res.json({
         status: true

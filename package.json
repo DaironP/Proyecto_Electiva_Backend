@@ -1,7 +1,7 @@
 {
-  "name": "canine_training_center",
+  "name": "backend_canine_training_center",
   "version": "1.0.0",
-  "description": "Monolithic Project - Canine Training Center",
+  "description": "Backend - Canine Training Center",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -10,28 +10,20 @@
   "keywords": [
     "JAVASCRIPT",
     "NODE",
-    "EXPRESS",
-    "EJS",
-    "PASSPORT"
+    "EXPRESS"
   ],
   "author": "Felipe Dueñas",
   "license": "ISC",
   "dependencies": {
-    "bcryptjs": "^2.4.3",
-    "connect-flash": "^0.1.1",
-    "cookie-parser": "^1.4.6",
-    "cors": "^2.8.5",
-    "dotenv": "^16.0.1",
-    "ejs": "^3.1.8",
     "express": "^4.18.1",
-    "express-ejs-layouts": "^2.5.1",
-    "express-session": "^1.17.3",
-    "express-validator": "^6.14.3",
-    "jsonwebtoken": "^9.0.0",
+    "dotenv": "^16.0.1",
+    "cors": "^2.8.5",
     "mongoose": "^7.0.0",
+    "bcryptjs": "^2.4.3",
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
-    "uuid": "^9.0.0"
+    "jsonwebtoken": "^9.0.0",
+    "express-validator": "^6.14.3"
   },
   "devDependencies": {
     "nodemon": "^2.0.20"
