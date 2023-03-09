@@ -45,6 +45,20 @@ const update = (req, res) => {
             const data = {name, surname, document, email, password: hash}
             const user = await Coach.findByIdAndUpdate(req.params.id, data, {new: true})
 
+            await user.populate({
+                path: 'sessions',
+                populate: [
+                    {
+                        path: 'coach',
+                        model: 'coach'
+                    },
+                    {
+                        path: 'dogs',
+                        model: 'dog'
+                    }
+                ]
+            })
+
             return res.json({
                 status: true,
                 user,

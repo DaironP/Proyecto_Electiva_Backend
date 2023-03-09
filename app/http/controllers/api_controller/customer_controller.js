@@ -33,6 +33,8 @@ const update = (req, res) => {
             const data = {name, surname, document, email, password: hash}
             const user = await Customer.findByIdAndUpdate(req.params.id, data, {new: true})
 
+            await user.populate('dogs')
+
             return res.json({
                 status: true,
                 user,
