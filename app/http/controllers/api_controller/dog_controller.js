@@ -1,5 +1,7 @@
-const Dog = require('../../models/dog')
+const mongoose = require('mongoose')
 const Customer = require('../../models/customer')
+const Dog = require('../../models/dog')
+const Session = require('../../models/session')
 
 const store = async (req, res) => {
 
@@ -76,6 +78,11 @@ const destroy = async (req, res) => {
         customer.dogs = customer.dogs.filter(dog => dog['_id'].toString() !== req.params.id)
 
         await customer.save()
+
+        await Session.updateMany(
+            {dogs: new mongoose.Types.ObjectId(req.params.id)},
+            {$pull: {dogs: new mongoose.Types.ObjectId(req.params.id)}}
+        )
 
         await customer.populate('dogs')
 

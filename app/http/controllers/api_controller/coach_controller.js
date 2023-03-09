@@ -5,7 +5,19 @@ const show = async (req, res) => {
 
     try {
 
-        const coach = await Coach.findById(req.params.id)
+        const coach = await Coach.findById(req.params.id).populate({
+            path: 'sessions',
+            populate: [
+                {
+                    path: 'coach',
+                    model: 'coach'
+                },
+                {
+                    path: 'dogs',
+                    model: 'dog'
+                }
+            ]
+        })
 
         return res.json({
             status: true,

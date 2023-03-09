@@ -1,1 +1,39 @@
-[{"id":"2fea4196-6a98-413d-b85b-2324eb8261df","name":"Tony","surname":"Stark","document":"1057343453","email":"tony.start@gmail.com","password":"$2a$10$edVash7yPEFlma2BfG8J2OyOu.4RSm94QdWNaUl2ZhFYmSj0157VO","rol":"coach","sessions":[{"id":"d0828382-7cd1-43f8-be06-f7d888140af0","coach":"Tony","description":"Entren","date":"2023-02-22","place":"Univer","dogs":[{"id":"fbb5e5a5-5140-44e6-aa6d-9fe26dde6f24","gender":"Hembra","name":"lupe","breed":"golden","age":"2"}]}]},{"id":"856b13be-9b6b-4ae9-af20-ebea382b811e","name":"Bruce","surname":"Wayne","document":"23926097","email":"bruce.wayne@gmail.com","password":"$2a$10$yTS5wCTLfits/r5Akhgo9eZHycKDGBkNN7cjnfBVCR.s8cc56vGXS","rol":"coach","sessions":[]}]
+[
+  {
+    "id": "2fea4196-6a98-413d-b85b-2324eb8261df",
+    "name": "Tony",
+    "surname": "Stark",
+    "document": "1057343453",
+    "email": "tony.start@gmail.com",
+    "password": "$2a$10$edVash7yPEFlma2BfG8J2OyOu.4RSm94QdWNaUl2ZhFYmSj0157VO",
+    "rol": "coach",
+    "sessions": [
+      {
+        "id": "d0828382-7cd1-43f8-be06-f7d888140af0",
+        "coach": "Tony",
+        "description": "Entren",
+        "date": "2023-02-22",
+        "place": "Univer",
+        "dogs": [
+          {
+            "id": "fbb5e5a5-5140-44e6-aa6d-9fe26dde6f24",
+            "gender": "Hembra",
+            "name": "lupe",
+            "breed": "golden",
+            "age": "2"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "856b13be-9b6b-4ae9-af20-ebea382b811e",
+    "name": "Bruce",
+    "surname": "Wayne",
+    "document": "23926097",
+    "email": "bruce.wayne@gmail.com",
+    "password": "$2a$10$yTS5wCTLfits/r5Akhgo9eZHycKDGBkNN7cjnfBVCR.s8cc56vGXS",
+    "rol": "coach",
+    "sessions": []
+  }
+]

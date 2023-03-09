@@ -12,7 +12,14 @@ const options = {
 
 const passport_local = new Passport_Local(options, async (email, password, done) => {
 
-    const coach = await Coach.find()
+    const coach = await Coach.find().populate({
+        path: 'sessions',
+        populate: {
+            path: 'coach',
+            model: 'coach'
+        }
+    })
+
     const customers = await Customer.find().populate('dogs')
 
     const users = [...coach, ...customers]

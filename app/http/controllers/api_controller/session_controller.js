@@ -1,42 +1,148 @@
-const Session = require('../models/session')
-const Customer = require('../models/customer')
+const mongoose = require('mongoose')
+const Session = require('../../models/session')
+const Coach = require('../../models/coach')
+const Dog = require('../../models/dog')
 
-module.exports = {
-    index : async (req,res)=>{
-        try {
-            const result = await Session.find({})
+const index = async (req, res) => {
 
-            return res.status(200).json({"result":true,"data":result})
-        } catch (error) {
-            return res.status(500).json({"result":false,"error":error}) 
-        }
-    },
-    save : async(req,res)=>{
-        const {id} = req.params
+    try {
 
-        try {
-            const customer = await Customer.findById(id)
-            if( customer ){
-                const session = new Session( req.body )
+        const sessions = await Session.find().populate('coach').populate('dogs')
 
-                session.customer = customer
+        return res.json({
+            status: true,
+            sessions
+        })
 
-                const result = await session.save()
+    } catch (e) {
 
-                customer.sessions.push(session)
-
-                await customer.save()
-                console.log("Done")
-
-                return res.status(200).json({"result":true,"data":result})
-
-            }else{
-                return res.status(200).json({"result":false,"error":"No existe el Cliente"})  
-            }
-        } catch (error) {
-            return res.status(500).json({"result":false,"error":error}) 
-        }
+        return res.json({
+            status: false,
+            message: 'Error, ha sucedido un problema'
+        })
 
     }
 
 }
+
+const store = async (req, res) => {
+
+    const {description, date, place} = req.body
+
+    try {
+
+        const coach = await Coach.findById(req.params.id)
+
+        const data = {description, date, place}
+
+        const session = await new Session(data)
+
+        session.coach = coach
+        await session.save()
+
+        coach.sessions = [...coach.sessions, session]
+        await coach.save()
+
+        await coach.populate({
+            path: 'sessions',
+            populate: {
+                path: 'coach',
+                model: 'coach'
+            }
+        })
+
+        return res.json({
+            status: true,
+            coach
+        })
+
+    } catch (e) {
+
+        return res.json({
+            status: false,
+            message: 'Error, ha sucedido un problema'
+        })
+
+    }
+
+}
+
+const update = async (req, res) => {
+
+    const {description, date, place} = req.body
+
+    try {
+
+        const data = {description, date, place}
+
+        const session = await Session.findByIdAndUpdate(req.params.id, data, {new: true})
+
+        const coach = await Coach.findById(session.coach.toString())
+
+        await coach.populate({
+            path: 'sessions',
+            populate: {
+                path: 'coach',
+                model: 'coach'
+            }
+        })
+
+        return res.json({
+            status: true,
+            coach
+        })
+
+    } catch (e) {
+
+        return res.json({
+            status: false,
+            message: 'Error, ha sucedido un problema'
+        })
+
+    }
+
+}
+
+const destroy = async (req, res) => {
+
+    try {
+
+        const session = await Session.findByIdAndDelete(req.params.id)
+
+        const coach = await Coach.findById(session['coach'].toString())
+        coach.sessions = coach.sessions.filter(session => session['_id'].toString() !== req.params.id)
+
+        await coach.save()
+
+        await Dog.updateMany(
+            {sessions: new mongoose.Types.ObjectId(req.params.id)},
+            {$pull: {sessions: new mongoose.Types.ObjectId(req.params.id)}}
+        )
+
+        await coach.populate({
+            path: 'sessions',
+            populate: {
+                path: 'coach',
+                model: 'coach'
+            }
+        })
+
+        return res.json({
+            status: true,
+            coach
+        })
+
+    } catch (e) {
+
+        console.log(e)
+
+        return res.json({
+            status: false,
+            message: 'Error, ha sucedido un problema'
+        })
+
+    }
+
+}
+
+module.exports = {index, store, update, destroy}

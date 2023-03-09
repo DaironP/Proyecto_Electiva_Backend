@@ -1,69 +1,75 @@
-const {read_file, write_file} = require('../persistence/read_and_write_controller')
+const Dog = require('../../models/dog')
+const Session = require('../../models/session')
 
-const index = (req, res) => {
+const store = async (req, res) => {
 
-    const data = get_data(req)
-    const trainers = read_file('coach.json')
+    const {session_id, dog_id} = req.body
 
-    if (req.user.rol === 'coach') {
+    try {
 
-        const trainer = trainers.find(user => user.id === req.user.id)
-        data.sessions = trainer.sessions
-    }
+        const dog = await Dog.findById(dog_id)
+        const session = await Session.findById(session_id).populate('dogs')
 
-    if (req.user.rol === 'customer') {
+        const validate_dog = session.dogs.find(dog => dog['_id'].toString() === dog_id)
 
-        const sessions = trainers.reduce((array, trainer) => array.concat(trainer.sessions), [])
-        const user_dog_ids = req.user.dogs.map(dog => dog.id)
+        if (validate_dog) {
 
-        data.sessions = sessions.filter(session => {
-            return session.dogs.some(dog => user_dog_ids.includes(dog.id))
+            return res.json({
+                status: false,
+                message: 'Ya se ha inscrito este Canino a la sesión'
+            })
+
+        }
+
+        dog.sessions = [...dog.sessions, session]
+        await dog.save()
+
+        session.dogs = [...session.dogs, dog]
+        await session.save()
+
+        return res.json({
+            status: true
+        })
+
+    } catch (e) {
+
+        return res.json({
+            status: false,
+            message: 'Error, ha sucedido un problema'
         })
 
     }
 
-    res.render('./components/app/session_management/index', data)
 }
 
-const store = (req, res) => {
+const destroy = async (req, res) => {
 
     const {session_id, dog_id} = req.body
 
-    const trainers = read_file('coach.json')
-    const sessions = trainers.reduce((array, trainer) => array.concat(trainer.sessions), [])
-    const session = sessions.find(session => session.id === session_id)
+    try {
 
-    const customers = read_file('customer.json')
-    const dogs = customers.reduce((array, customer) => array.concat(customer.dogs), [])
-    const dog = dogs.find(dog => dog.id === dog_id)
+        const dog = await Dog.findById(dog_id).populate('sessions')
+        const session = await Session.findById(session_id).populate('dogs')
 
-    const validate_dog = session.dogs.find(dog => dog.id === dog_id)
+        dog.sessions = dog.sessions.filter(session => session['_id'].toString() !== session_id)
+        await dog.save()
 
-    if (validate_dog) {
-        req.flash('errorMessage', 'Ya se ha inscrito este Canino a la sesión')
-        return res.redirect('/sessions')
+        session.dogs = session.dogs.filter(dog => dog['_id'].toString() !== dog_id)
+        await session.save()
+
+        return res.json({
+            status: true
+        })
+
+    } catch (e) {
+
+        return res.json({
+            status: false,
+            message: 'Error, ha sucedido un problema'
+        })
+
     }
 
-    session.dogs = [...session.dogs, dog]
-
-    write_file('coach.json', JSON.stringify(trainers))
-
-    req.flash('successMessage', 'Inscripción realizada correctamente')
-    res.redirect('/sessions')
-}
-
-const destroy = (req, res) => {
-
-    const trainers = read_file('coach.json')
-    const sessions = trainers.reduce((array, trainer) => array.concat(trainer.sessions), [])
-    const session = sessions.find(session => session.id === req.params.session_id)
-
-    session.dogs = session.dogs.filter(dog => dog.id !== req.params.dog_id)
-
-    write_file('coach.json', JSON.stringify(trainers))
-
-    req.flash('successMessage', 'Se ha removido el Canino de la sesión de adiestramiento')
-    res.redirect('/consult-sessions')
 }
 
 const get_data = (req) => {
@@ -78,4 +84,4 @@ const get_data = (req) => {
 
 }
 
-module.exports = {index, store, destroy}
+module.exports = {store, destroy}

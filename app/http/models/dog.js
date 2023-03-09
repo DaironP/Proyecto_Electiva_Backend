@@ -21,7 +21,13 @@ const DogSchema = new mongoose.Schema({
     customer: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'customer'
-    }
+    },
+    sessions: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'session'
+        }
+    ]
 
 }, {versionKey: false})
 

@@ -5,14 +5,14 @@ const validate_create_session = [
     check('description').exists().not().isEmpty(),
     check('date').exists().not().isEmpty(),
     check('place').exists().not().isEmpty(),
-    (req, res, next) => validate_result(req, res, next, '/create-session')
+    (req, res, next) => validate_result(req, res, next)
 ]
 
 const validate_update_session = [
     check('description').exists().not().isEmpty(),
     check('date').exists().not().isEmpty(),
     check('place').exists().not().isEmpty(),
-    (req, res, next) => validate_result(req, res, next, '/sessions')
+    (req, res, next) => validate_result(req, res, next)
 ]
 
 module.exports = {validate_create_session, validate_update_session}

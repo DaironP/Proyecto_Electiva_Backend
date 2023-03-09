@@ -48,7 +48,7 @@ const logout = async (req, res) => {
     return res.json({
         status: true
     })
-    
+
 }
 
 const register = async (req, res) => {
